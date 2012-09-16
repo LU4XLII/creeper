@@ -35,14 +35,15 @@ def get_all_links(page):
     return links
 
 # Initial function that starts the web crawling on a particular URL
-def crawl_web(seed):
+def crawl_web(seed, max_depth):
     # TODO: make crawler behave accoridng robots.txt to be polite to others
-    # TODO: make second parameter depth
-    tocrawl = set([seed])
-    crawled = set([])
+    tocrawl = set([seed]) # Set of links that will be crawled
+    crawled = set([]) # Set of links that has been crawled
+    nextcrawl = set([]) # Set of links with current depth
+    depth = 0
     index = {}
     graph = {}
-    while tocrawl:
+    while tocrawl and max_depth >= depth:
         page = tocrawl.pop()
         if page not in crawled:
             start_time = time.time() # measure crawling time
@@ -50,12 +51,20 @@ def crawl_web(seed):
             add_page_to_index(index,page,content)
             outlinks = get_all_links(content)
             graph[page] = outlinks
-            tocrawl = tocrawl.union(outlinks)
+            nextcrawl = nextcrawl.union(outlinks) # outlinks for next depth
             crawled.add(page)
             if verbose:
                 print 'URL: ' + page
                 print 'Number of links: ' + str(len(outlinks))
                 print 'Crawl time: ' + str(time.time() - start_time) + ' sec'
+        if not tocrawl: # test if anything is in current depth to crawl
+            # move stored links for next depth to crawl Set
+            tocrawl, nextcrawl = nextcrawl, set([])
+            depth += 1 # increase depth to next level
+            if verbose:
+                print '-----------------------'
+                print 'Entering depth: ' + str(depth)
+                print 'Links to crawl: ' + str(len(tocrawl))
     return index, graph
 
 # Function that add word to the index
@@ -92,7 +101,7 @@ OPTIONS
     -d, --depth <value>
         Define depth how far should Creeper crawl from the root url. The
         <value> is mandatory argumnet and can be any positive integer. If not
-        specified default value 100 is used.
+        specified default value 10 is used.
     -v, --verbose
         Cause Creeper to be verbose, showing url crawled, with some statistical
         data that has been retrieved.
@@ -127,19 +136,24 @@ def main(argv):
     global verbose
     verbose = False
     url = 'http://www.udacity.com/cs101x/urank/index.html'
-    depth = 100
-    for opt, arg in opts:
+    depth = 10
+    for opt, arg in opts: # Loop throught parameters and set variables
         if opt in ("-u", "--url"):
             url = arg
         if opt in ("-d", "--depth"):
-            depth = arg
+            if arg.isdigit(): # Only positive integer is valid input
+                depth = int(arg)
+            else:
+                print arg + ' is not an digit, please try run with parameter -h'
+                sys.exit(2)
         if opt in ("-v", "--verbose"):
             verbose = True
         if opt in ("-h", "--help"):
             usage()
             sys.exit()
 
-    index, graph = crawl_web(url)
+    # TODO: Add ability to store / export / print
+    index, graph = crawl_web(url, depth)
     #pprint(index)
     #pprint(graph)
     if verbose:
