@@ -1,19 +1,21 @@
-Creeper
-=======
-
-NAME
+Name
 ----
     Creeper - open source Python web crawler
 
-SYNOPSIS
+Installation
+------------
+    Clone repository git://github.com/ricco386/creeper.git and execute
+    file: ```python creeper.py```
+
+Synopsis
 --------
     creeper [-u|--url <value>] [-d|--depth] [-h|--help]
 
-DESCRIPTION
+Description
 -----------
     Simple web crwaler written in Python.
 
-OPTIONS
+Options
 -------
     -u, --url <value>
         The <value> is mandatory argument, with website url that starts the
@@ -28,7 +30,7 @@ OPTIONS
     -h, --help
         Prints the synopsis and a list of the most commonly used commands.
 
-LICENCE
+Licence
 -------
     Creeper - Python web crawler
     Copyright (C) 2012  Richard Kellner
