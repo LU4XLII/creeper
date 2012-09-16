@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import sys
+import time
 import getopt
 from pprint import pprint
-
 
 # Function that get requested url from the Internet
 def get_page(url):
@@ -45,12 +45,17 @@ def crawl_web(seed):
     while tocrawl:
         page = tocrawl.pop()
         if page not in crawled:
+            start_time = time.time() # measure crawling time
             content = get_page(page)
             add_page_to_index(index,page,content)
             outlinks = get_all_links(content)
             graph[page] = outlinks
             tocrawl = tocrawl.union(outlinks)
             crawled.add(page)
+            if verbose:
+                print 'URL: ' + page
+                print 'Number of links: ' + str(len(outlinks))
+                print 'Crawl time: ' + str(time.time() - start_time) + ' sec'
     return index, graph
 
 # Function that add word to the index
@@ -75,7 +80,7 @@ def usage():
     Creeper - Python web crawler
 
 SYNOPSIS
-    creeper [-u|--url <value>] [-d|--depth] [-h|--help]
+    creeper [-u|--url <value>] [-d|--depth] [-v|--verbose] [-h|--help]
 
 DESCRIPTION
     Simple web crwaler written in Python.
@@ -88,6 +93,9 @@ OPTIONS
         Define depth how far should Creeper crawl from the root url. The
         <value> is mandatory argumnet and can be any positive integer. If not
         specified default value 100 is used.
+    -v, --verbose
+        Cause Creeper to be verbose, showing url crawled, with some statistical
+        data that has been retrieved.
     -h, --help
         Prints the synopsis and a list of the most commonly used commands.
 
@@ -108,14 +116,16 @@ LICENCE
     along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
 def main(argv):
-    # TODO: Add some statistics
+    start_time = time.time() # measure script execution time
     try:
-        opts, args = getopt.getopt(argv, "u:d:h", ["url=", "depth=", "help"])
+        opts, args = getopt.getopt(argv, "u:d:vh", ["url=", "depth=", "verbose", "help"])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
     # predefined values that can be passed as parameter
+    global verbose
+    verbose = False
     url = 'http://www.udacity.com/cs101x/urank/index.html'
     depth = 100
     for opt, arg in opts:
@@ -123,13 +133,19 @@ def main(argv):
             url = arg
         if opt in ("-d", "--depth"):
             depth = arg
+        if opt in ("-v", "--verbose"):
+            verbose = True
         if opt in ("-h", "--help"):
             usage()
             sys.exit()
 
     index, graph = crawl_web(url)
     #pprint(index)
-    pprint(graph)
+    #pprint(graph)
+    if verbose:
+        print '==========================================='
+        print 'Total pages crawled: ' + str(len(graph))
+        print 'Total execution time: ' + str(time.time() - start_time) + ' seconds'
 
 if __name__ == "__main__":
     main(sys.argv[1:])

@@ -2,31 +2,29 @@ Creeper
 =======
 
 NAME
-----
     Creeper - open source Python web crawler
 
 SYNOPSIS
---------
     creeper [-u|--url <value>] [-d|--depth] [-h|--help]
 
 DESCRIPTION
------------
     Simple web crwaler written in Python.
 
 OPTIONS
--------
     -u, --url <value>
         The <value> is mandatory argument, with website url that starts the
-	crawling.
+        crawling.
     -d, --depth <value>
         Define depth how far should Creeper crawl from the root url. The
         <value> is mandatory argumnet and can be any positive integer. If not
         specified default value 100 is used.
+    -v, --verbose
+        Cause Creeper to be verbose, showing url crawled, with some statistical
+        data that has been retrieved.
     -h, --help
         Prints the synopsis and a list of the most commonly used commands.
 
-Licence
--------
+LICENCE
     Creeper - Python web crawler
     Copyright (C) 2012  Richard Kellner
 
