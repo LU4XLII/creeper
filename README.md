@@ -2,15 +2,19 @@ Creeper
 =======
 
 NAME
+----
     Creeper - open source Python web crawler
 
 SYNOPSIS
+--------
     creeper [-u|--url <value>] [-d|--depth] [-h|--help]
 
 DESCRIPTION
+-----------
     Simple web crwaler written in Python.
 
 OPTIONS
+-------
     -u, --url <value>
         The <value> is mandatory argument, with website url that starts the
         crawling.
@@ -25,6 +29,7 @@ OPTIONS
         Prints the synopsis and a list of the most commonly used commands.
 
 LICENCE
+-------
     Creeper - Python web crawler
     Copyright (C) 2012  Richard Kellner
 
