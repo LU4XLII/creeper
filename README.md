@@ -4,12 +4,12 @@ Name
 
 Installation
 ------------
-    Clone repository git://github.com/ricco386/creeper.git and execute
-    file: ```python creeper.py```
+    Clone repository git://github.com/ricco386/creeper.git and execute:
+    python creeper.py
 
 Synopsis
 --------
-    creeper [-u|--url <value>] [-d|--depth] [-h|--help]
+    creeper [-u|--url <value>] [-d|--depth <value>] [-v|--verbose] [-h|--help]
 
 Description
 -----------
