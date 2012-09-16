@@ -27,5 +27,10 @@ pip-log.txt
 # Translations
 *.mo
 
+# Eclipse
+.project
+.pydevproject
+
 # OS files
 .DS_Store
+*.swp
