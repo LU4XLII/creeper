@@ -14,6 +14,7 @@ def get_page(url):
 
 # Help function that return first link and end position of the link
 def get_next_target(page):
+    # TODO: Add ability to restrict creeper for domain only
     start_link = page.find('<a href=')
     if start_link == -1:
         return None, 0
@@ -37,6 +38,7 @@ def get_all_links(page):
 # Initial function that starts the web crawling on a particular URL
 def crawl_web(seed, max_depth):
     # TODO: make crawler behave accoridng robots.txt to be polite to others
+    url_parse(seed) 
     tocrawl = set([seed]) # Set of links that will be crawled
     crawled = set([]) # Set of links that has been crawled
     nextcrawl = set([]) # Set of links with current depth
@@ -66,6 +68,12 @@ def crawl_web(seed, max_depth):
                 print 'Entering depth: ' + str(depth)
                 print 'Links to crawl: ' + str(len(tocrawl))
     return index, graph
+
+# Function for URL parsing
+def url_parse(url):
+    from urlparse import urlparse
+    o = urlparse(url)
+        pprint(o)
 
 # Function that add word to the index
 def add_to_index(index, keyword, url):
