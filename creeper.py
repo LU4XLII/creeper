@@ -1,8 +1,10 @@
 #!/usr/bin/python
+#42
 import sys
 import time
 import getopt
 from pprint import pprint
+import argparse
 
 # Function that get requested url from the Internet
 def get_page(url):
@@ -56,24 +58,24 @@ def crawl_web(seed, max_depth):
             nextcrawl = nextcrawl.union(outlinks) # outlinks for next depth
             crawled.add(page)
             if verbose:
-                print 'URL: ' + page
-                print 'Number of links: ' + str(len(outlinks))
-                print 'Crawl time: ' + str(time.time() - start_time) + ' sec'
+                print('URL: ' + page)
+                print('Number of links: ' + str(len(outlinks)))
+                print('Crawl time: ' + str(time.time() - start_time) + ' sec')
         if not tocrawl: # test if anything is in current depth to crawl
             # move stored links for next depth to crawl Set
             tocrawl, nextcrawl = nextcrawl, set([])
             depth += 1 # increase depth to next level
             if verbose:
-                print '-----------------------'
-                print 'Entering depth: ' + str(depth)
-                print 'Links to crawl: ' + str(len(tocrawl))
+                print('-----------------------')
+                print('Entering depth: ' + str(depth))
+                print('Links to crawl: ' + str(len(tocrawl)))
     return index, graph
 
 # Function for URL parsing
 def url_parse(url):
-    from urlparse import urlparse
+    from urllib.parse import urlparse
     o = urlparse(url)
-        pprint(o)
+    pprint(o)
 
 # Function that add word to the index
 def add_to_index(index, keyword, url):
@@ -93,7 +95,7 @@ def add_page_to_index(index, url, content):
 
 # Function that shows manual page to user
 def usage():
-    print '''NAME
+    print('''NAME
     Creeper - Python web crawler
 
 SYNOPSIS
@@ -130,44 +132,32 @@ LICENCE
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.''')
 
-def main(argv):
+def main():
     start_time = time.time() # measure script execution time
-    try:
-        opts, args = getopt.getopt(argv, "u:d:vh", ["url=", "depth=", "verbose", "help"])
-    except getopt.GetoptError:
-        usage()
-        sys.exit(2)
-
-    # predefined values that can be passed as parameter
+    #Alternative argument parser with lib argparse
+    parser = argparse.ArgumentParser(description='Python web crawler.')
+    parser.add_argument('-u','--url', nargs='?', type=str, help='''-u, --url <value> \nThe <value> is mandatory argument, with website url that starts the crawling.''', required=True)
+    parser.add_argument('-d','--depth', nargs='+', type=int, help='''-d, --depth <value>\nDefine depth how far should Creeper crawl from the root url. The\n<value> is mandatory argumnet and can be any positive integer. If not\nspecified default value 100 is used.''')
+    parser.add_argument('-v','--verbose', action='store_true',help='''-v, --verbose\nCause Creeper to be verbose, showing url crawled, with some statistical\ndata that has been retrieved.''')
+    args = parser.parse_args()
+    #set up of variables received of args
+    url = args.url
+    depth = 100
+    if args.depth != None:
+        depth = args.depth
     global verbose
-    verbose = False
-    url = 'http://www.udacity.com/cs101x/urank/index.html'
-    depth = 10
-    for opt, arg in opts: # Loop throught parameters and set variables
-        if opt in ("-u", "--url"):
-            url = arg
-        if opt in ("-d", "--depth"):
-            if arg.isdigit(): # Only positive integer is valid input
-                depth = int(arg)
-            else:
-                print arg + ' is not an digit, please try run with parameter -h'
-                sys.exit(2)
-        if opt in ("-v", "--verbose"):
-            verbose = True
-        if opt in ("-h", "--help"):
-            usage()
-            sys.exit()
+    verbose = args.verbose
 
     # TODO: Add ability to store / export / print
     index, graph = crawl_web(url, depth)
     #pprint(index)
     #pprint(graph)
     if verbose:
-        print '==========================================='
-        print 'Total pages crawled: ' + str(len(graph))
-        print 'Total execution time: ' + str(time.time() - start_time) + ' seconds'
+        print('===========================================')
+        print('Total pages crawled: ' + str(len(graph)))
+        print('Total execution time: ' + str(time.time() - start_time) + ' seconds')
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
